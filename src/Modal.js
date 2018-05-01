@@ -10,7 +10,7 @@ class OutterComponent extends Component {
         this.state = {
             percent: 0,
             open: false,
-            numberOffiles: 5,
+            numberOffiles: 10,
             filesUnderupload: []
         }
     }
@@ -25,11 +25,11 @@ class OutterComponent extends Component {
                 this.setState({percent: this.getNrOfCompleted() / this.state.numberOffiles*100})
                 this.checkCompleted()}
         )
-        console.log(JSON.stringify(this.state, null, 4) + this.getNrOfCompleted())
+        console.log(JSON.stringify(this.state, null, 4) + this.getNrOfCompleted()+ '  ***  ' +  this.getPrcntOfCompleted())
     }
     checkCompleted = () => {
         if (!this.isCompleted(this.state.filesUnderupload)) {
-            setTimeout(() => this.startProgress(), 100)
+            setTimeout(() => this.startProgress(), 1000)
         } else
             this.setState({ open: false })
 
@@ -43,13 +43,19 @@ class OutterComponent extends Component {
                 return val.ferdig ? res + 1 : res
             }, 0);
     }
+    getPrcntOfCompleted = () => {
+        return Math.ceil(this.state.filesUnderupload.reduce(
+            (res, val) => {
+                return  res + val.progress
+            }, 0) /(this.state.numberOffiles*100)  *100)
+    }
 
     updateAll = (fuu) => {
         var fuu_copy = [...fuu]
         fuu_copy.forEach(
             (obj) => {
                 if (obj.progress < 100)
-                    obj.progress = obj.progress + Math.floor(Math.random() * 10)
+                    obj.progress = obj.progress + Math.floor(Math.random() * 30)
 
                 obj.ferdig = obj.progress < 100 ? false : true
                 obj.progress = obj.ferdig ? 100 : obj.progress
@@ -77,8 +83,8 @@ class OutterComponent extends Component {
                 <CustomModal
                     open={this.state.open}
                     onClose={this.handleCloseModal}
-                    percent={this.state.percent}
-
+                    percent={ this.getPrcntOfCompleted()}
+                    value_prog2={this.getNrOfCompleted()} total_prog2={this.state.numberOffiles}
                 />
             </div>
 
@@ -102,6 +108,7 @@ const CustomModal = (props) => (
             <Header textAlign='center' as='h3' color='teal'>Loding files 1 of n ... </Header>
             <Container font textAlign='center'>progress {props.percent}</Container>
             <Progress percent={props.percent} inverted progress>  Uploading Files </Progress>
+            <Progress value={props.value_prog2} total={props.total_prog2}  progress='ratio' inverted progress>  Uploading Files </Progress>
 
         </Modal.Content>
 
