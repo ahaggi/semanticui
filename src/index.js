@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import Mod from './Modal'
+import LanguageChooser from './LanguageChooser'
 
 
 
 
-ReactDOM.render(<Mod />, document.getElementById('root'));
+ReactDOM.render(<LanguageChooser />, document.getElementById('root'));
